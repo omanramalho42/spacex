@@ -1,7 +1,8 @@
 import Header from '@/components/Header'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
-
+import StyledComponentsRegistry from '@/lib/registry'
+// import { GlobalStyle } from '@/styles/global'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
@@ -17,8 +18,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <Header />
-        {children}
+        <StyledComponentsRegistry>
+          {/* <GlobalStyle /> */}
+          <Header />
+          {children}
+        </StyledComponentsRegistry>
       </body>
     </html>
   )
