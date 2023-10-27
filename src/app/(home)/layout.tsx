@@ -12,11 +12,13 @@ import React from 'react'
 // import { GlobalStyle } from '@/styles/global'
 const inter = Inter({ subsets: ['latin'] })
 
-interface LayoutProps {
+export type LayoutProps = {
   children: React.ReactNode;
-}
+  types: React.ReactNode;
+  params?: any;
+};
 
-export default function Layout({ children }: LayoutProps ) {
+export default function Layout({ children, types, params }: LayoutProps ) {
   return (
     <html lang="en">
       <Head />
