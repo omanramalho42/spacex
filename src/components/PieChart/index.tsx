@@ -1,7 +1,20 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Chart from 'chart.js/auto';
+import Skeleton from 'react-loading-skeleton'
+import 'react-loading-skeleton/dist/skeleton.css'
 
-const PieChart = () => {
+interface DataProps {
+  [key: string]: {
+    success: number;
+    errors: number;
+    reused: number;
+  }
+}
+interface PieChartProps {
+  data: DataProps[];
+}
+
+const PieChart = ({ data }: PieChartProps) => {
   const chartRef = useRef<HTMLCanvasElement | null>(null);
   const chartInstanceRef = useRef<Chart | null>(null);
 
@@ -9,7 +22,7 @@ const PieChart = () => {
     if (chartRef.current) {
       const ctx = chartRef.current.getContext('2d');
 
-      if (ctx) {
+      if (ctx && data) {
         // Destrua o gráfico anterior, se existir
         if (chartInstanceRef.current) {
           chartInstanceRef.current.destroy();
@@ -19,19 +32,34 @@ const PieChart = () => {
         const newChartInstance = new Chart(ctx, {
           type: 'pie', // Tipo de gráfico de pizza
           data: {
-            labels: ['Item 1', 'Item 2', 'Item 3', 'Item 4'],
+            labels: Object.keys(data),
             datasets: [
               {
-                data: [12, 19, 3, 5],
-                backgroundColor: ['rgba(106, 49, 190, 0.6)', 'rgba(255, 0, 0, 0.6)', 'rgba(0, 255, 0, 0.6)', 'rgba(0, 0, 255, 0.6)'],
+                label: 'Launchers',
+                // @ts-ignore
+                data: Object.keys(data).map(key => data[key]),
+                backgroundColor: ['rgba(0, 0, 255, 0.6)', 'rgba(255, 0, 0, 0.6)', 'rgba(0, 255, 0, 0.6)', 'rgba(0, 0, 0, 0.6)'],
                 borderColor: 'rgba(255, 255, 255, 1)', // Cor da borda
                 borderWidth: 1,
               },
             ],
           },
           options: {
-            // Opcionais: pode definir título, legendas, etc.
-          },
+            plugins: {
+              title: {
+                text: 'Rocket Launchers',
+                color: '#FFF',
+                display: true
+              },
+              legend: {
+                display: true,
+                labels: {
+                  color: '#FFF',
+                },
+                position: 'bottom', // Modifique a posição da legenda
+              }
+            },
+          }
         });
 
         // Atualize a referência para o novo gráfico
@@ -39,11 +67,18 @@ const PieChart = () => {
         chartInstanceRef.current = newChartInstance;
       }
     }
-  }, []);
+  }, [data]);
+
+  
+  if(!data) {
+    <Skeleton circle width={400} height={400} />
+  }
 
   return (
     <div>
-      <canvas style={{ width: 400, height: 200 }} ref={chartRef} id="meuGrafico" width="400" height="200"></canvas>
+      <canvas 
+        style={{ width: 400, height: 200 }} 
+        ref={chartRef} id="meuGrafico" width="400" height="200"></canvas>
     </div>
   );
 };

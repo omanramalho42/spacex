@@ -1,6 +1,21 @@
-import styled from 'styled-components'
+import styled, { keyframes } from 'styled-components'
 import { motion } from 'framer-motion'
 import { css } from 'styled-components';
+
+const TYPOGRAPHY_SIZES = {
+  'small': 1,
+  'medium': 1.5,
+  'large': 2
+}
+
+const COLORS = {
+  'warning': 'orange',
+  'error': 'red',
+  'success': 'green',
+  'info': 'blue',
+  'default': 'white',
+  'theme': '#6A31BE'
+}
 
 export const Container = styled.main`
   margin: 60px 100px;
@@ -9,19 +24,8 @@ export const Container = styled.main`
     margin: 60px 20px;
   }
 
-  div.charts-content {
-    flex: 1;
-    display: flex;
-    flex-direction: row;
-    
-    margin: 20px 0;
-    
-    justify-content: space-between;
-    align-items: center;
-
-    @media screen and (max-width: 1000px) {
-      flex-direction: column;
-    }
+  @media screen and (max-width: 600px) {
+    margin: 0px;
   }
 
   div.content-nav {
@@ -33,6 +37,107 @@ export const Container = styled.main`
 
     border-radius: 8px;
     background-color: rgba(25,25,25, .5);
+  }
+`
+
+interface ChartsBoxProps {
+  show: boolean;
+}
+
+export const Button = styled(motion.button)`
+  display: flex;
+  
+  padding: 10px;
+
+  text-align: center;
+  
+  color: white;
+  background-color: #6A31BE;
+  border-radius: 8px;
+
+  margin: 15px 0;
+  
+  cursor: pointer;
+`;
+
+export const MetricCard = styled(motion.div)`
+  display: flex;
+  flex-direction: row;
+  
+  margin: 20px 0;
+
+  justify-content: space-around;
+  align-items: center;
+`;
+
+export const Card = styled(motion.div)`
+  display: flex;
+
+  cursor: default;
+  
+  padding: 15px;
+
+  justify-content: center;
+  align-items: center;
+
+  background-color: rgba(25, 25, 25, .9);
+  box-shadow: 0 0 8px 2px rgba(0,0,0, 0.5);
+  border: 1px solid #333;
+
+  border-radius: 5px;
+  color: '#FFF'
+`;
+
+const rotation = keyframes`
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+`;
+
+export const Loading = styled(motion.div)`
+  flex: 1;
+  width: 100%;
+  height: 100vh;
+
+  justify-content: center;
+  align-items: center;
+
+  div.infinite-loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100px;
+    height: 100px;
+
+    justify-content: center;
+    align-items: center;
+    margin: auto;
+
+    font-size: 16px;
+
+    border: 5px solid #f3f3f3; /* light grey */
+    border-top: 5px solid green; /* blue */
+    
+    border-radius: 50%;
+    animation: ${rotation} 2s linear infinite;
+  }
+`
+
+export const ChartsBox = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+
+  margin: 20px 10px;
+  
+  justify-content: space-between;
+  align-items: center;
+
+  @media screen and (max-width: 1000px) {
+    flex-direction: column;
   }
 `
 
@@ -57,14 +162,14 @@ export const Nav = styled(motion.nav)<NavProps>`
     color: ${({ active }) => 
       active 
       ? '#6A31BE' 
-      : 'white'
+      : 'lightgray'
     };
   }
 
   &:hover {
-    border-bottom: 2px solid #6A31BE;
+    border-bottom: 2px solid ${({ active }) => active ? '#6A31BE' : 'transparent'};
     border-radius: 2px;
-    box-shadow: 0 2px 0 #6A31BE;
+    box-shadow: 0 2px 0 ${({ active }) => active ? '#6A31BE' : 'transparent'};;
 
     p {
       font-size: 1em;
@@ -98,6 +203,13 @@ export const HomeContainer = styled.section`
   div.content-filter {
     border-radius: 8px;
     background-color: rgba(25,25,25, .9);
+
+    border: 1px solid ${COLORS['theme']};
+    transition: all 0.325s ease-in-out;
+
+    &:hover {
+      box-shadow: 0 0 12px 2px ${COLORS['theme']};
+    }
   }
 
   div.content-filter > section > div {
@@ -172,21 +284,6 @@ export const Filter = styled(motion.div)<FilterProps>`
   background-color: #171811;
 `
 
-const TYPOGRAPHY_SIZES = {
-  'small': 1,
-  'medium': 1.5,
-  'large': 2
-}
-
-const COLORS = {
-  'warning': 'orange',
-  'error': 'red',
-  'success': 'green',
-  'info': 'blue',
-  'default': 'white',
-  'theme': '#6A31BE'
-}
-
 interface TypographyProps {
   size?: keyof typeof TYPOGRAPHY_SIZES;
   color?: keyof typeof COLORS;
@@ -213,7 +310,7 @@ export const IconWrapper = styled.div<IconWrapperProps>`
     COLORS[color ?? 'default']};
 `;
 
-export const Content = styled(motion.div)`
+export const Content = styled(motion.table)`
   display: flex;
   
   justify-content: space-between;
@@ -293,25 +390,29 @@ interface BadgeStatusProps {
 
 export const BadgeStatus = styled.span<BadgeStatusProps>`
   display: flex;
+  width: 50%;
+
+  background-color: black;
 
   justify-content: center;
   align-items: center;
-
-  margin: auto;
-  position: relative;
-  bottom: 15px;
-
-  padding: 5px;
 
   color: ${({ color }) => color};
 
   border-radius: 12px;
   font-size: .9em;
   border: 2px solid ${({ color }) => color};
+`;
 
-  @media screen and (max-width: 1000px) {
-    padding: 1px;
-    font-size: .8em;
-    display: none;
+export const Table = styled(motion.table)`
+  border-radius: 8px;
+  padding: 5px;
+
+  border: 1px solid ${COLORS['theme']};
+  transition: all 0.325s ease-in-out;
+
+  &:hover {
+    box-shadow: 0 0 12px 2px ${COLORS['theme']};
   }
+  background-color: rgba(25,25,25,0.6);
 `;

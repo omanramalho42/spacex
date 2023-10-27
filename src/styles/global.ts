@@ -18,6 +18,7 @@ export const GlobalStyle = createGlobalStyle`
   }
 
   body {
+    background-color: #333;
     background-image: url('../assets/background.jpg');
     background-repeat: no-repeat center center;
     background-size: cover;

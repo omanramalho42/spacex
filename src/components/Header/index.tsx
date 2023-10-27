@@ -1,5 +1,9 @@
 'use client'
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
+
+import { useDispatch, useSelector } from 'react-redux';
+import { setSearchValue } from '../../context/searchSlice';
+
 import { CaretDown, MagnifyingGlass } from 'phosphor-react'
 import { 
   HeaderContainer, 
@@ -14,7 +18,35 @@ import {
   Logo
 } from './styled'
 
+import { useRouter, useSearchParams } from 'next/navigation'
+
 const Header = () => {
+  const dispatch = useDispatch();
+  // const searchValue = useSelector((state: any) => state.search.value);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const search = searchParams?.get('search') ?? ''
+  
+  const handleInputChange = (event: any) => {
+    dispatch(setSearchValue(event.target.value)); 
+    router.push(`?search=${event.target.value}`);
+  };
+
+  const handleInputChangeDebounce = useDebounce(handleInputChange, 500);
+
+  function useDebounce(fn: any, delay: number) {
+    const timeOutRef = useRef(0);
+
+    function handleDebounced(...args: any) {
+      window.clearTimeout(timeOutRef.current);
+      timeOutRef.current = window.setTimeout(() => {
+        fn(...args);
+      }, delay);
+    }
+
+    return handleDebounced;
+  }
   return (
     <HeaderContainer>
       <ContentLogo>
@@ -36,7 +68,9 @@ const Header = () => {
         </button>
         <Input 
           type="text"
-          placeholder='Pesquise aqui' 
+          placeholder='Pesquise aqui'
+          role='search'
+          onChange={handleInputChangeDebounce}
         />
       </InputBox>
 
@@ -44,7 +78,7 @@ const Header = () => {
         <BoxFlag>
           <LanguageFlag />
           <CaretDown size={24} color='white' />
-          <select>
+          <select disabled>
             <option value="EN">
               EN
             </option>
