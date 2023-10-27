@@ -8,15 +8,18 @@ import StyledComponentsRegistry from '@/lib/registry'
 import Head from './head'
 
 import ReduxProvider from '@/lib/redux'
+import React from 'react'
 
 // import { GlobalStyle } from '@/styles/global'
 const inter = Inter({ subsets: ['latin'] })
 
+interface LayoutProps {
+  children: React.ReactNode;
+}
+
 export default function RootLayout({
   children,
-}: {
-  children: React.ReactNode
-}) {
+}: LayoutProps ) {
   return (
     <html lang="en">
       <Head />

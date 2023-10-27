@@ -295,6 +295,8 @@ export default function Home({ searchParams }: { searchParams: { [key: string]: 
     toast.success('Dados carregados com sucesso')
   }
 
+  console.log(process.env.REACT_API_URL, 'react api url');
+
   useEffect(() => {
     fetchLaunchersData();
     fetchRockets();
