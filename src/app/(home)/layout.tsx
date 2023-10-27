@@ -13,7 +13,7 @@ import React from 'react'
 const inter = Inter({ subsets: ['latin'] })
 
 // @ts-ignore
-export default function Layout({ children }) {
+export default function Layout({ children, types }) {
   return (
     <html lang="en">
       <Head />
