@@ -26,7 +26,9 @@ export default function Layout({ children, types, params }: LayoutProps ) {
         <StyledComponentsRegistry>
           <ReduxProvider>
             <Header />
-            { children }
+            <main>
+              { children }
+            </main>
           </ReduxProvider>
         </StyledComponentsRegistry>
       </body>
