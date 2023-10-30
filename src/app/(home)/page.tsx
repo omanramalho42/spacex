@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect, useRef, useState } from "react"
+import { Suspense, useCallback, useEffect, useRef, useState } from "react"
 
 import { GlobalStyle } from "@/styles/global"
 
@@ -10,7 +10,7 @@ import PieChart from "@/components/PieChart"
 import { useSelector } from 'react-redux';
 
 import { motion } from 'framer-motion'
-import { toast, Toaster } from "react-hot-toast"
+import { LoaderIcon, toast, Toaster } from "react-hot-toast"
 import axios from "axios"
 
 import Moment from 'react-moment';
@@ -400,12 +400,6 @@ export default function Home({ searchParams }: { searchParams: { [key: string]: 
     return options;
   };
 
-  useEffect(() => {
-    setactiveFilter({ filter: '' });
-    console.log(page, 'page');
-    console.log(itemsPerPage, 'per page');
-  },[page, itemsPerPage])
-
   const [videoShow, setVideoShow] = useState<string>('');
   const constraintsRef = useRef(null);
 
@@ -457,8 +451,6 @@ export default function Home({ searchParams }: { searchParams: { [key: string]: 
         
         <Button 
           onClick={() => {
-            // fetchLaunchersData()
-            // fetchRockets()
             fetchDataApi()
           }}
           whileTap={{ scale: 0.95 }}
@@ -573,6 +565,8 @@ export default function Home({ searchParams }: { searchParams: { [key: string]: 
         </Nav>
       </motion.div>
       <HomeContainer>
+        
+      <Suspense fallback={<LoaderIcon />}>
         <div className="content-filter">    
           {filters.map(({ icon, key: id, title }, idx) => {
             return (
@@ -645,6 +639,7 @@ export default function Home({ searchParams }: { searchParams: { [key: string]: 
             )
           })}
         </div>
+      </Suspense>
         
         {activeNav.nav === 'Launchers' && (
           <>
@@ -806,11 +801,13 @@ export default function Home({ searchParams }: { searchParams: { [key: string]: 
                 }
               })}
             </Table>
-
-            <PaginatinationControls 
-              hasNextPage={end < filterSearchLaunchers(launchers).length}
-              hasPrevPage={start > 0}
-            />
+            
+            <Suspense fallback={<LoaderIcon />}>
+              <PaginatinationControls 
+                hasNextPage={end < filterSearchLaunchers(launchers).length}
+                hasPrevPage={start > 0}
+              />
+            </Suspense>
 
             <Typography style={{ textAlign: 'center' }}>
               Page {Number(page)} {" "}
@@ -818,55 +815,6 @@ export default function Home({ searchParams }: { searchParams: { [key: string]: 
             </Typography>
           </>
         )}
-        {/* <div 
-          style={{ 
-            display: 'flex',
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            padding: '0 10px',
-            borderRadius: '8px',
-            height: '30px',
-            color: '#fff', 
-            gap: 5, 
-            flex: 1, 
-            background: 'rgba(25,25,25,0.8)' 
-          }}
-        >
-          <button 
-            style={{ cursor: 'pointer' }}
-            onClick={() => {
-              if (page+1 >= Math.ceil(launchers.length/itemsPerPage)) {
-                return setPage(0);
-              }
-              setPage((prevPage) =>  ++prevPage);
-            }}
-          >
-            next page
-          </button>
-          <select 
-            name="itemsPerPage" 
-            id="itemsPerPage"
-            disabled
-            defaultValue={itemsPerPage}
-            onChange={(event: any) => {
-              setItemsPerPage(event.target.value)
-            }}
-          >
-            <option value="5">5</option>
-          </select>
-          <button
-            style={{ cursor: 'pointer' }}
-            onClick={() => {
-              if (page === 0) {
-                return setPage(Math.ceil(launchers.length/itemsPerPage - 1));
-              }
-              setPage((prevPage) => --prevPage);
-            }}
-          >
-            prev page
-          </button>
-        </div> */}
         
       </HomeContainer>
     </Container>
